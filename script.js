@@ -233,30 +233,34 @@ function startGifAnimation() {
     stopGifAnimation();
     
     let frameIndex = 0;
+    let lastFrameTime = performance.now();
     
-    function animate() {
+    function animate(currentTime) {
         if (!isGif) return;
         
         const frame = gifFrames[frameIndex];
-        originalImage = frame.canvas;
-        
-        updateEditor();
-        updatePreview();
-        
-        frameIndex = (frameIndex + 1) % gifFrames.length;
-        
         const delay = frame.delay || 100;
-        gifAnimationId = setTimeout(() => {
-            requestAnimationFrame(animate);
-        }, delay);
+        const elapsed = currentTime - lastFrameTime;
+        
+        if (elapsed >= delay) {
+            originalImage = frame.canvas;
+            
+            updateEditor();
+            updatePreview();
+            
+            frameIndex = (frameIndex + 1) % gifFrames.length;
+            lastFrameTime = currentTime;
+        }
+        
+        gifAnimationId = requestAnimationFrame(animate);
     }
     
-    animate();
+    gifAnimationId = requestAnimationFrame(animate);
 }
 
 function stopGifAnimation() {
     if (gifAnimationId) {
-        clearTimeout(gifAnimationId);
+        cancelAnimationFrame(gifAnimationId);
         gifAnimationId = null;
     }
 }
