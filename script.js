@@ -13,7 +13,6 @@ let isDragging = false;
 let lastX = 0;
 let lastY = 0;
 
-// GIF support
 let isGif = false;
 let gifFrames = [];
 let currentFrame = 0;
@@ -95,7 +94,6 @@ function loadGif(file) {
     reader.onload = (event) => {
         const dataUrl = event.target.result;
         
-        // Создаем временный img элемент для SuperGif
         const tempImg = document.createElement('img');
         tempImg.setAttribute('rel:animated_src', dataUrl);
         tempImg.setAttribute('rel:auto_play', '0');
@@ -104,7 +102,6 @@ function loadGif(file) {
         document.body.appendChild(tempImg);
         
         try {
-            // Используем SuperGif для парсинга
             const rub = new SuperGif({ 
                 gif: tempImg,
                 auto_play: false,
@@ -127,7 +124,6 @@ function loadGif(file) {
                     
                     console.log(`GIF dimensions: ${width}x${height}`);
                     
-                    // Извлекаем все кадры
                     for (let i = 0; i < frameCount; i++) {
                         rub.move_to(i);
                         
@@ -137,7 +133,6 @@ function loadGif(file) {
                         const ctx = frameCanvas.getContext('2d');
                         ctx.drawImage(canvas, 0, 0);
                         
-                        // Используем фиксированную задержку 100ms
                         gifFrames.push({
                             canvas: frameCanvas,
                             delay: 100
@@ -189,59 +184,18 @@ function loadGif(file) {
             if (document.body.contains(tempImg)) {
                 document.body.removeChild(tempImg);
             }
-            // Fallback на старый метод
             loadGifFallback(file);
         }
     };
     reader.readAsDataURL(file);
 }
 
-// Fallback метод для загрузки GIF как статического изображения
-function loadGifFallback(file) {
-    console.log('Используем fallback метод для GIF');
-    const reader = new FileReader();
-    reader.onload = (event) => {
-        const img = new Image();
-        img.onload = () => {
-            // Создаем canvas с первым кадром
-            const canvas = document.createElement('canvas');
-            canvas.width = img.width;
-            canvas.height = img.height;
-            const ctx = canvas.getContext('2d');
-            ctx.drawImage(img, 0, 0);
-            
-            gifFrames = [{
-                canvas: canvas,
-                delay: 100
-            }];
-            
-            originalImage = canvas;
-            scale = BANNER_WIDTH / originalImage.width;
-            offsetX = 0;
-            offsetY = 0;
-            
-            updateEditor();
-            updatePreview();
-            
-            saveBannerBtn.disabled = false;
-            saveAvatarBtn.disabled = false;
-            saveAllBtn.disabled = false;
-            
-            alert('GIF загружен как статическое изображение (библиотека не доступна)');
-        };
-        img.src = event.target.result;
-    };
-    reader.readAsDataURL(file);
-}
-
-// Fallback метод для загрузки GIF как статического изображения
 function loadGifFallback(file) {
     console.log('Using fallback method for GIF');
     const reader = new FileReader();
     reader.onload = (event) => {
         const img = new Image();
         img.onload = () => {
-            // Создаем canvas с первым кадром
             const canvas = document.createElement('canvas');
             canvas.width = img.width;
             canvas.height = img.height;
@@ -575,7 +529,6 @@ async function saveGifBanner() {
     console.log(`Starting banner save, frames: ${gifFrames.length}`);
     
     return new Promise((resolve, reject) => {
-        // Подготавливаем кадры для gifshot
         const images = gifFrames.map((frame, index) => {
             const croppedCanvas = document.createElement('canvas');
             croppedCanvas.width = BANNER_WIDTH;
@@ -601,7 +554,6 @@ async function saveGifBanner() {
         
         console.log(`Creating GIF from ${images.length} frames...`);
         
-        // Используем gifshot для создания GIF
         gifshot.createGIF({
             images: images,
             gifWidth: BANNER_WIDTH,
@@ -614,7 +566,6 @@ async function saveGifBanner() {
         }, (obj) => {
             if (!obj.error) {
                 console.log('GIF banner created successfully');
-                // Конвертируем base64 в blob
                 fetch(obj.image)
                     .then(res => res.blob())
                     .then(blob => {
@@ -640,20 +591,17 @@ async function saveGifAvatar() {
     console.log(`Starting avatar save, frames: ${gifFrames.length}`);
     
     return new Promise((resolve, reject) => {
-        // Подготавливаем кадры аватарки
         const images = gifFrames.map((frame, index) => {
             const avatarCanvas = document.createElement('canvas');
             avatarCanvas.width = AVATAR_OUTPUT_SIZE;
             avatarCanvas.height = AVATAR_OUTPUT_SIZE;
             const ctx = avatarCanvas.getContext('2d');
             
-            // Создаем круглую маску
             ctx.beginPath();
             ctx.arc(AVATAR_OUTPUT_SIZE / 2, AVATAR_OUTPUT_SIZE / 2, AVATAR_OUTPUT_SIZE / 2, 0, Math.PI * 2);
             ctx.closePath();
             ctx.clip();
             
-            // Рисуем обрезанную часть
             const origX1 = (AVATAR_X - offsetX) / scale;
             const origY1 = (AVATAR_Y - offsetY) / scale;
             const origSize = AVATAR_SIZE / scale;
@@ -679,7 +627,6 @@ async function saveGifAvatar() {
         
         console.log(`Creating GIF avatar from ${images.length} frames...`);
         
-        // Используем gifshot для создания GIF
         gifshot.createGIF({
             images: images,
             gifWidth: AVATAR_OUTPUT_SIZE,
