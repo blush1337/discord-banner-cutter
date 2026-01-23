@@ -10,7 +10,7 @@
 
 ## ┌─[ DESCRIPTION ]
 
-Web-приложение для создания баннера и аватарки для Discord профиля с поддержкой анимированных GIF.
+Web application for creating Discord profile banners and avatars with animated GIF support.
 
 ## ┌─[ CHANGELOG ]
 
