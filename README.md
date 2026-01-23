@@ -16,8 +16,8 @@ Web application for creating Discord profile banners and avatars with animated G
 
 ### v1.2
 ```
-├─ Добавлена поддержка GIF (анимированные баннеры и аватарки)
-└─ Добавлено логирование операций
+├─ Added GIF support (animated banners and avatars)
+└─ Added operation logging
 ```
 
 ```
