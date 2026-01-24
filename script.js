@@ -32,6 +32,12 @@ const saveBannerBtn = document.getElementById('saveBanner');
 const saveAvatarBtn = document.getElementById('saveAvatar');
 const saveAllBtn = document.getElementById('saveAll');
 
+const container = document.querySelector('.container');
+const editorSection = document.querySelector('.editor-section');
+const previewSection = document.querySelector('.preview-section');
+
+container.classList.add('compact');
+
 loadBannerBtn.addEventListener('click', () => fileInput.click());
 
 fileInput.addEventListener('change', (e) => {
@@ -73,6 +79,8 @@ function loadStaticImage(file) {
             saveAvatarBtn.disabled = false;
             saveAllBtn.disabled = false;
             
+            expandContainer();
+            
             console.log('Static image ready for editing');
         };
         img.onerror = () => {
@@ -99,6 +107,10 @@ function loadGif(file) {
         tempImg.setAttribute('rel:auto_play', '0');
         tempImg.style.position = 'absolute';
         tempImg.style.left = '-9999px';
+        tempImg.style.visibility = 'hidden';
+        tempImg.style.width = '0';
+        tempImg.style.height = '0';
+        tempImg.style.opacity = '0';
         document.body.appendChild(tempImg);
         
         try {
@@ -168,6 +180,8 @@ function loadGif(file) {
                     saveAvatarBtn.disabled = false;
                     saveAllBtn.disabled = false;
                     
+                    expandContainer();
+                    
                     console.log('GIF ready for editing');
                     
                 } catch (error) {
@@ -218,6 +232,8 @@ function loadGifFallback(file) {
             saveBannerBtn.disabled = false;
             saveAvatarBtn.disabled = false;
             saveAllBtn.disabled = false;
+            
+            expandContainer();
             
             console.warn('GIF loaded as static image (failed to extract frames)');
             alert('GIF loaded as static image (failed to extract frames)');
@@ -680,6 +696,19 @@ function downloadBlob(blob, filename) {
     a.click();
     URL.revokeObjectURL(url);
     console.log(`Downloaded: ${filename}`);
+}
+
+function expandContainer() {
+    container.classList.remove('compact');
+    container.classList.add('expanded');
+    
+    setTimeout(() => {
+        editorSection.classList.add('visible');
+    }, 600);
+    
+    setTimeout(() => {
+        previewSection.classList.add('visible');
+    }, 800);
 }
 
 updateEditor();

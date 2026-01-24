@@ -10,16 +10,64 @@ body {
     min-height: 100vh;
     padding: 20px;
     color: #ffffff;
+    overflow-x: hidden;
+    zoom: 0.7;
+}
+
+body > img {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+}
+
+body > canvas:not(#editorCanvas):not(#previewCanvas) {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    position: absolute !important;
+    left: -9999px !important;
+}
+
+body > div:not(.wrapper) {
+    display: none !important;
+}
+
+.wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: calc(100vh - 40px);
 }
 
 .container {
     max-width: 1200px;
+    width: 100%;
     margin: 0 auto;
     background: #1a1a1a;
     border-radius: 0;
     border: 2px solid #333;
     padding: 30px;
     box-shadow: 0 0 30px rgba(255, 255, 255, 0.1);
+    opacity: 0;
+    transform: scale(0.95);
+    animation: containerFadeIn 0.8s ease-out forwards;
+    position: relative;
+}
+
+.container.compact {
+    max-width: 600px;
+    transition: max-width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.container.expanded {
+    max-width: 1200px;
+}
+
+@keyframes containerFadeIn {
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
 }
 
 .ascii-title {
@@ -119,15 +167,43 @@ h2 {
 
 .editor-section, .preview-section {
     margin-bottom: 30px;
-    display: flex;
     flex-direction: column;
     align-items: center;
+    opacity: 0;
+    transform: translateY(20px);
+    width: 100%;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.1s;
+}
+
+.editor-section.visible, .preview-section.visible {
+    display: flex;
+    max-height: 2000px;
+    animation: sectionFadeIn 0.6s ease-out forwards;
+}
+
+.editor-section.visible {
+    animation-delay: 0.2s;
+}
+
+.preview-section.visible {
+    animation-delay: 0.4s;
+}
+
+@keyframes sectionFadeIn {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .canvas-container {
     display: flex;
     justify-content: center;
     margin-bottom: 10px;
+    width: 100%;
+    max-width: 100%;
 }
 
 canvas {
@@ -135,6 +211,8 @@ canvas {
     border-radius: 0;
     cursor: grab;
     background: #1E1F22;
+    max-width: 100%;
+    height: auto;
 }
 
 canvas:active {

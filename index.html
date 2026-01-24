@@ -7,42 +7,44 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container">
-        <pre class="ascii-title">
+    <div class="wrapper">
+        <div class="container">
+            <pre class="ascii-title">
 ██████╗ ██╗███████╗ ██████╗ ██████╗ ██████╗ ██████╗ 
 ██╔══██╗██║██╔════╝██╔════╝██╔═══██╗██╔══██╗██╔══██╗
 ██║  ██║██║███████╗██║     ██║   ██║██████╔╝██║  ██║
 ██║  ██║██║╚════██║██║     ██║   ██║██╔══██╗██║  ██║
 ██████╔╝██║███████║╚██████╗╚██████╔╝██║  ██║██████╔╝
 ╚═════╝ ╚═╝╚══════╝ ╚═════╝ ╚═════╝ ╚═╝  ╚═╝╚═════╝ 
-        </pre>
-        <p class="subtitle">[ BANNER CUTTER v1.2 ]</p>
-        
-        <div class="controls">
-            <button id="loadBanner" class="btn btn-primary">[ LOAD_BANNER ]</button>
-            <button id="saveBanner" class="btn btn-success" disabled>[ SAVE_BANNER ]</button>
-            <button id="saveAvatar" class="btn btn-success" disabled>[ SAVE_AVATAR ]</button>
-            <button id="saveAll" class="btn btn-success" disabled>[ SAVE_ALL ]</button>
-        </div>
-
-        <div class="info">
-            <p>├─ banner_size: 400x140</p>
-            <p>├─ avatar_size: 80x80 (crop_area: 120x120)</p>
-            <p>├─ format: PNG, JPG, GIF (animated)</p>
-            <p>└─ controls: [DRAG] + [SCROLL]</p>
-        </div>
-
-        <div class="editor-section">
-            <h2>┌─[ EDITOR ]</h2>
-            <div class="canvas-container">
-                <canvas id="editorCanvas" width="800" height="400"></canvas>
+            </pre>
+            <p class="subtitle">[ BANNER CUTTER v1.2 ]</p>
+            
+            <div class="controls">
+                <button id="loadBanner" class="btn btn-primary">[ LOAD_BANNER ]</button>
+                <button id="saveBanner" class="btn btn-success" disabled>[ SAVE_BANNER ]</button>
+                <button id="saveAvatar" class="btn btn-success" disabled>[ SAVE_AVATAR ]</button>
+                <button id="saveAll" class="btn btn-success" disabled>[ SAVE_ALL ]</button>
             </div>
-            <p class="hint">└─ BLUE_LINE = banner_border | BLACK_CIRCLE = avatar_area</p>
-        </div>
 
-        <div class="preview-section">
-            <h2>┌─[ PREVIEW ]</h2>
-            <canvas id="previewCanvas" width="600" height="450"></canvas>
+            <div class="info">
+                <p>├─ banner_size: 400x140</p>
+                <p>├─ avatar_size: 80x80 (crop_area: 120x120)</p>
+                <p>├─ format: PNG, JPG, GIF (animated)</p>
+                <p>└─ controls: [DRAG] + [SCROLL]</p>
+            </div>
+
+            <div class="editor-section">
+                <h2>┌─[ EDITOR ]</h2>
+                <div class="canvas-container">
+                    <canvas id="editorCanvas" width="800" height="400"></canvas>
+                </div>
+                <p class="hint">└─ BLUE_LINE = banner_border | BLACK_CIRCLE = avatar_area</p>
+            </div>
+
+            <div class="preview-section">
+                <h2>┌─[ PREVIEW ]</h2>
+                <canvas id="previewCanvas" width="600" height="450"></canvas>
+            </div>
         </div>
     </div>
 
