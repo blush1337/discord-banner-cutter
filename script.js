@@ -39,6 +39,8 @@ const progressContainer = document.querySelector('.progress-container');
 const progressPercent = document.getElementById('progressPercent');
 const progressFill = document.getElementById('progressFill');
 const footer = document.querySelector('.footer');
+const asciiDiscord = document.getElementById('asciiDiscord');
+const asciiCutter = document.getElementById('asciiCutter');
 
 container.classList.add('compact');
 
@@ -793,38 +795,67 @@ function startExpandAnimation() {
     container.classList.remove('compact');
     container.classList.add('expanded');
     
-    // Расширяем футер вместе с контейнером
-    if (footer) {
-        footer.classList.add('expanded');
+    // Шаг 1: Скрываем subtitle (0ms)
+    const subtitle = document.querySelector('.subtitle');
+    if (subtitle) {
+        subtitle.classList.add('hidden');
     }
     
-    // Показываем кнопки сохранения
-    const saveButtons = document.querySelectorAll('.btn-success');
-    saveButtons.forEach(btn => {
-        btn.classList.add('visible');
-    });
+    // Шаг 2: Меняем ASCII графику с DISCORD на CUTTER (300ms)
+    setTimeout(() => {
+        if (asciiDiscord) {
+            asciiDiscord.classList.add('hidden');
+            setTimeout(() => {
+                asciiDiscord.style.display = 'none';
+            }, 500);
+        }
+    }, 300);
     
-    // Скрываем информацию о размерах
-    const sizeInfoElements = document.querySelectorAll('.info p.size-info');
-    sizeInfoElements.forEach(el => {
-        el.classList.add('hidden');
-    });
+    setTimeout(() => {
+        if (asciiCutter) {
+            asciiCutter.classList.add('visible');
+        }
+    }, 600);
     
-    // Показываем строку с контролами
-    const controlsLine = document.querySelector('.info p.controls-line');
-    if (controlsLine) {
-        controlsLine.classList.add('visible');
-    }
+    // Шаг 3: Перемещаем футер над контейнером (400ms)
+    setTimeout(() => {
+        if (footer) {
+            footer.classList.add('move-up');
+        }
+    }, 400);
+    
+    // Шаг 4: Показываем кнопки сохранения (700ms, с задержкой между кнопками)
+    setTimeout(() => {
+        const saveButtons = document.querySelectorAll('.btn-success');
+        saveButtons.forEach((btn, index) => {
+            setTimeout(() => {
+                btn.classList.add('visible');
+            }, index * 100);
+        });
+    }, 700);
+    
+    // Шаг 5: Скрываем информацию о размерах и показываем контролы (500ms)
+    setTimeout(() => {
+        const sizeInfoElements = document.querySelectorAll('.info p.size-info');
+        sizeInfoElements.forEach(el => {
+            el.classList.add('hidden');
+        });
+        
+        const controlsLine = document.querySelector('.info p.controls-line');
+        if (controlsLine) {
+            controlsLine.classList.add('visible');
+        }
+    }, 500);
 }
 
 function finishExpandAnimation() {
     setTimeout(() => {
         editorSection.classList.add('visible');
-    }, 600);
+    }, 1000);
     
     setTimeout(() => {
         previewSection.classList.add('visible');
-    }, 800);
+    }, 1200);
 }
 
 function expandContainer() {
