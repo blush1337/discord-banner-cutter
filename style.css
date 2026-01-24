@@ -8,10 +8,13 @@ body {
     font-family: 'Courier New', Courier, monospace;
     background: #0a0a0a;
     min-height: 100vh;
-    padding: 20px;
+    padding: 0;
     color: #ffffff;
     overflow-x: hidden;
     zoom: 0.7;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 body > img {
@@ -34,9 +37,12 @@ body > div:not(.wrapper) {
 
 .wrapper {
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    min-height: calc(100vh - 40px);
+    width: 100%;
+    padding: 20px;
+    gap: 20px;
 }
 
 .container {
@@ -56,11 +62,13 @@ body > div:not(.wrapper) {
 
 .container.compact {
     max-width: 600px;
-    transition: max-width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    margin-top: 450px;
+    transition: max-width 0.6s cubic-bezier(0.4, 0, 0.2, 1), margin-top 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .container.expanded {
     max-width: 1200px;
+    margin-top: 0;
 }
 
 @keyframes containerFadeIn {
@@ -144,6 +152,23 @@ h2 {
 .btn-success {
     border-color: #ffffff;
     color: #ffffff;
+    display: none;
+}
+
+.btn-success.visible {
+    display: inline-block;
+    animation: buttonFadeIn 0.6s ease-out forwards;
+}
+
+@keyframes buttonFadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
 }
 
 .btn-success:hover:not(:disabled) {
@@ -163,6 +188,65 @@ h2 {
     margin: 5px 0;
     color: #ffffff;
     font-size: 14px;
+}
+
+.info p.controls-line {
+    opacity: 0;
+    max-height: 0;
+    overflow: hidden;
+    transition: opacity 0.6s ease, max-height 0.6s ease;
+}
+
+.info p.controls-line.visible {
+    opacity: 1;
+    max-height: 30px;
+}
+
+.info p.size-info {
+    opacity: 1;
+    max-height: 30px;
+    transition: opacity 0.4s ease, max-height 0.4s ease;
+}
+
+.info p.size-info.hidden {
+    opacity: 0;
+    max-height: 0;
+    margin: 0;
+}
+
+.progress-container {
+    background: #0f0f0f;
+    padding: 15px;
+    border: 1px solid #333;
+    margin-bottom: 20px;
+    border-left: 3px solid #5865F2;
+    opacity: 0;
+    max-height: 0;
+    overflow: hidden;
+    transition: opacity 0.3s ease, max-height 0.3s ease;
+}
+
+.progress-container.visible {
+    opacity: 1;
+    max-height: 150px;
+}
+
+.progress-text {
+    margin: 0 0 10px 0;
+    color: #ffffff;
+    font-size: 14px;
+}
+
+.progress-bar {
+    margin: 0;
+    color: #ffffff;
+    font-size: 14px;
+    line-height: 1.5;
+    white-space: pre;
+}
+
+#progressFill {
+    color: #5865F2;
 }
 
 .editor-section, .preview-section {
@@ -241,4 +325,39 @@ canvas:active {
     .btn {
         width: 100%;
     }
+}
+
+.footer {
+    max-width: 600px;
+    width: 100%;
+    margin: 0 auto;
+    background: #1a1a1a;
+    border-radius: 0;
+    border: 2px solid #333;
+    padding: 15px 30px;
+    box-shadow: 0 0 30px rgba(255, 255, 255, 0.1);
+    text-align: center;
+    transition: max-width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.footer.expanded {
+    max-width: 1200px;
+}
+
+.footer p {
+    margin: 0;
+    color: #666;
+    font-size: 12px;
+    letter-spacing: 1px;
+}
+
+.footer a {
+    color: #5865F2;
+    text-decoration: none;
+    transition: color 0.3s ease, text-shadow 0.3s ease;
+}
+
+.footer a:hover {
+    color: #ffffff;
+    text-shadow: 0 0 10px rgba(88, 101, 242, 0.5);
 }

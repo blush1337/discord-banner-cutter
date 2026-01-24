@@ -27,10 +27,15 @@
             </div>
 
             <div class="info">
-                <p>├─ banner_size: 400x140</p>
-                <p>├─ avatar_size: 80x80 (crop_area: 120x120)</p>
-                <p>├─ format: PNG, JPG, GIF (animated)</p>
-                <p>└─ controls: [DRAG] + [SCROLL]</p>
+                <p class="size-info">├─ banner_size: 400x140</p>
+                <p class="size-info">├─ avatar_size: 80x80 (crop_area: 120x120)</p>
+                <p class="size-info">└─ format: PNG, JPG, GIF (animated)</p>
+                <p class="controls-line">├─ controls: [DRAG] + [SCROLL]</p>
+            </div>
+
+            <div class="progress-container">
+                <p class="progress-text">└─ loading: <span id="progressPercent">0</span>%</p>
+                <pre class="progress-bar" id="progressBar">[ <span id="progressFill"></span> ]</pre>
             </div>
 
             <div class="editor-section">
@@ -46,6 +51,10 @@
                 <canvas id="previewCanvas" width="600" height="450"></canvas>
             </div>
         </div>
+
+        <footer class="footer">
+            <p>designed by <a href="https://t.me/xyz1001" target="_blank" rel="noopener noreferrer">blush1337</a></p>
+        </footer>
     </div>
 
     <input type="file" id="fileInput" accept="image/*,image/gif" style="display: none;">

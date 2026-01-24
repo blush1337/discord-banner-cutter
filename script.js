@@ -35,8 +35,29 @@ const saveAllBtn = document.getElementById('saveAll');
 const container = document.querySelector('.container');
 const editorSection = document.querySelector('.editor-section');
 const previewSection = document.querySelector('.preview-section');
+const progressContainer = document.querySelector('.progress-container');
+const progressPercent = document.getElementById('progressPercent');
+const progressFill = document.getElementById('progressFill');
+const footer = document.querySelector('.footer');
 
 container.classList.add('compact');
+
+function updateProgress(percent) {
+    progressPercent.textContent = Math.round(percent);
+    const barLength = 40;
+    const fillLength = Math.round((percent / 100) * barLength);
+    const emptyLength = barLength - fillLength;
+    progressFill.textContent = '█'.repeat(fillLength) + '░'.repeat(emptyLength);
+}
+
+function showProgress() {
+    progressContainer.classList.add('visible');
+    updateProgress(0);
+}
+
+function hideProgress() {
+    progressContainer.classList.remove('visible');
+}
 
 loadBannerBtn.addEventListener('click', () => fileInput.click());
 
@@ -59,11 +80,18 @@ function loadStaticImage(file) {
     
     console.log(`Loading static image: ${file.name}, size: ${(file.size / 1024).toFixed(2)} KB, type: ${file.type}`);
     
+    showProgress();
+    updateProgress(10);
+    
     const reader = new FileReader();
     reader.onload = (event) => {
+        updateProgress(50);
+        
         const img = new Image();
         img.onload = () => {
             console.log(`Static image loaded: ${img.width}x${img.height}`);
+            
+            updateProgress(75);
             
             originalImage = img;
             scale = BANNER_WIDTH / img.width;
@@ -72,19 +100,35 @@ function loadStaticImage(file) {
             
             console.log(`Initial scale: ${scale.toFixed(3)}, offset: (${offsetX}, ${offsetY})`);
             
+            // Начинаем анимацию сразу
+            startExpandAnimation();
+            
+            updateProgress(90);
+            
             updateEditor();
             updatePreview();
             
-            saveBannerBtn.disabled = false;
-            saveAvatarBtn.disabled = false;
-            saveAllBtn.disabled = false;
-            
-            expandContainer();
-            
-            console.log('Static image ready for editing');
+            // Завершаем анимацию когда превью отрисовано
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                    updateProgress(100);
+                    
+                    setTimeout(() => {
+                        hideProgress();
+                        finishExpandAnimation();
+                        
+                        saveBannerBtn.disabled = false;
+                        saveAvatarBtn.disabled = false;
+                        saveAllBtn.disabled = false;
+                        
+                        console.log('Static image ready for editing');
+                    }, 300);
+                });
+            });
         };
         img.onerror = () => {
             console.error('Failed to load static image');
+            hideProgress();
             alert('Failed to load image');
         };
         img.src = event.target.result;
@@ -98,8 +142,13 @@ function loadGif(file) {
     
     console.log(`Loading GIF: ${file.name}, size: ${(file.size / 1024).toFixed(2)} KB`);
     
+    showProgress();
+    updateProgress(10);
+    
     const reader = new FileReader();
     reader.onload = (event) => {
+        updateProgress(30);
+        
         const dataUrl = event.target.result;
         
         const tempImg = document.createElement('img');
@@ -123,6 +172,8 @@ function loadGif(file) {
             
             rub.load(() => {
                 try {
+                    updateProgress(50);
+                    
                     const frameCount = rub.get_length();
                     console.log(`SuperGif: detected ${frameCount} frames`);
                     
@@ -150,6 +201,10 @@ function loadGif(file) {
                             delay: 100
                         });
                         
+                        // Обновляем прогресс при извлечении кадров
+                        const progress = 50 + Math.round((i / frameCount) * 25);
+                        updateProgress(progress);
+                        
                         if ((i + 1) % 10 === 0 || i === frameCount - 1) {
                             console.log(`Extracted frame ${i + 1}/${frameCount}`);
                         }
@@ -160,6 +215,8 @@ function loadGif(file) {
                     }
                     
                     console.log(`Total frames extracted: ${gifFrames.length}`);
+                    
+                    updateProgress(80);
                     
                     originalImage = gifFrames[0].canvas;
                     scale = BANNER_WIDTH / originalImage.width;
@@ -173,16 +230,31 @@ function loadGif(file) {
                         console.log('GIF animation started');
                     }
                     
+                    // Начинаем анимацию сразу
+                    startExpandAnimation();
+                    
+                    updateProgress(90);
+                    
                     updateEditor();
                     updatePreview();
                     
-                    saveBannerBtn.disabled = false;
-                    saveAvatarBtn.disabled = false;
-                    saveAllBtn.disabled = false;
-                    
-                    expandContainer();
-                    
-                    console.log('GIF ready for editing');
+                    // Завершаем анимацию когда превью отрисовано
+                    requestAnimationFrame(() => {
+                        requestAnimationFrame(() => {
+                            updateProgress(100);
+                            
+                            setTimeout(() => {
+                                hideProgress();
+                                finishExpandAnimation();
+                                
+                                saveBannerBtn.disabled = false;
+                                saveAvatarBtn.disabled = false;
+                                saveAllBtn.disabled = false;
+                                
+                                console.log('GIF ready for editing');
+                            }, 300);
+                        });
+                    });
                     
                 } catch (error) {
                     console.error('Error extracting frames:', error);
@@ -208,8 +280,12 @@ function loadGifFallback(file) {
     console.log('Using fallback method for GIF');
     const reader = new FileReader();
     reader.onload = (event) => {
+        updateProgress(60);
+        
         const img = new Image();
         img.onload = () => {
+            updateProgress(80);
+            
             const canvas = document.createElement('canvas');
             canvas.width = img.width;
             canvas.height = img.height;
@@ -226,17 +302,32 @@ function loadGifFallback(file) {
             offsetX = 0;
             offsetY = 0;
             
+            // Начинаем анимацию сразу
+            startExpandAnimation();
+            
+            updateProgress(90);
+            
             updateEditor();
             updatePreview();
             
-            saveBannerBtn.disabled = false;
-            saveAvatarBtn.disabled = false;
-            saveAllBtn.disabled = false;
-            
-            expandContainer();
-            
-            console.warn('GIF loaded as static image (failed to extract frames)');
-            alert('GIF loaded as static image (failed to extract frames)');
+            // Завершаем анимацию когда превью отрисовано
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                    updateProgress(100);
+                    
+                    setTimeout(() => {
+                        hideProgress();
+                        finishExpandAnimation();
+                        
+                        saveBannerBtn.disabled = false;
+                        saveAvatarBtn.disabled = false;
+                        saveAllBtn.disabled = false;
+                        
+                        console.warn('GIF loaded as static image (failed to extract frames)');
+                        alert('GIF loaded as static image (failed to extract frames)');
+                    }, 300);
+                });
+            });
         };
         img.src = event.target.result;
     };
@@ -698,10 +789,35 @@ function downloadBlob(blob, filename) {
     console.log(`Downloaded: ${filename}`);
 }
 
-function expandContainer() {
+function startExpandAnimation() {
     container.classList.remove('compact');
     container.classList.add('expanded');
     
+    // Расширяем футер вместе с контейнером
+    if (footer) {
+        footer.classList.add('expanded');
+    }
+    
+    // Показываем кнопки сохранения
+    const saveButtons = document.querySelectorAll('.btn-success');
+    saveButtons.forEach(btn => {
+        btn.classList.add('visible');
+    });
+    
+    // Скрываем информацию о размерах
+    const sizeInfoElements = document.querySelectorAll('.info p.size-info');
+    sizeInfoElements.forEach(el => {
+        el.classList.add('hidden');
+    });
+    
+    // Показываем строку с контролами
+    const controlsLine = document.querySelector('.info p.controls-line');
+    if (controlsLine) {
+        controlsLine.classList.add('visible');
+    }
+}
+
+function finishExpandAnimation() {
     setTimeout(() => {
         editorSection.classList.add('visible');
     }, 600);
@@ -709,6 +825,11 @@ function expandContainer() {
     setTimeout(() => {
         previewSection.classList.add('visible');
     }, 800);
+}
+
+function expandContainer() {
+    startExpandAnimation();
+    finishExpandAnimation();
 }
 
 updateEditor();
