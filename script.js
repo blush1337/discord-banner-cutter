@@ -31,6 +31,10 @@ const loadBannerBtn = document.getElementById('loadBanner');
 const saveBannerBtn = document.getElementById('saveBanner');
 const saveAvatarBtn = document.getElementById('saveAvatar');
 const saveAllBtn = document.getElementById('saveAll');
+const urlInput = document.getElementById('urlInput');
+const loadFromUrlBtn = document.getElementById('loadFromUrl');
+const toggleUrlInputBtn = document.getElementById('toggleUrlInput');
+const urlSection = document.getElementById('urlSection');
 
 const container = document.querySelector('.container');
 const editorSection = document.querySelector('.editor-section');
@@ -63,6 +67,36 @@ function hideProgress() {
 
 loadBannerBtn.addEventListener('click', () => fileInput.click());
 
+toggleUrlInputBtn.addEventListener('click', () => {
+    if (urlSection.style.display === 'none') {
+        urlSection.style.display = 'block';
+        toggleUrlInputBtn.textContent = '▲';
+    } else {
+        urlSection.style.display = 'none';
+        toggleUrlInputBtn.textContent = '▼';
+    }
+});
+
+loadFromUrlBtn.addEventListener('click', () => {
+    const url = urlInput.value.trim();
+    if (!url) {
+        alert('Вставьте прямую ссылку на изображение');
+        return;
+    }
+    
+    if (!url.startsWith('http://') && !url.startsWith('https://')) {
+        alert('URL должен начинаться с http:// или https://');
+        return;
+    }
+    
+    if (url.includes('pinterest.com/pin/') || url.includes('pin.it/')) {
+        alert('Это ссылка на страницу Pinterest, а не на изображение.\n\nДля Pinterest:\n1. Скачайте GIF с Pinterest\n2. Используйте кнопку [ LOAD_BANNER ] для загрузки файла');
+        return;
+    }
+    
+    loadImageFromUrl(url);
+});
+
 fileInput.addEventListener('change', (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -75,6 +109,53 @@ fileInput.addEventListener('change', (e) => {
         loadStaticImage(file);
     }
 });
+
+async function loadImageFromUrl(url) {
+    stopGifAnimation();
+    
+    console.log(`Loading image from URL: ${url}`);
+    
+    showProgress();
+    updateProgress(10);
+    
+    try {
+        console.log('Loading image directly...');
+        
+        updateProgress(30);
+        
+        const response = await fetch(url);
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        updateProgress(50);
+        
+        const blob = await response.blob();
+        console.log(`Downloaded blob: ${(blob.size / 1024).toFixed(2)} KB, type: ${blob.type}`);
+        
+        if (blob.type === 'image/gif') {
+            const file = new File([blob], 'image.gif', { type: 'image/gif' });
+            loadGif(file);
+        } else {
+            const file = new File([blob], 'image.jpg', { type: blob.type || 'image/jpeg' });
+            loadStaticImage(file);
+        }
+        
+    } catch (error) {
+        console.error('Error loading image from URL:', error);
+        hideProgress();
+        
+        let errorMessage = 'Не удалось загрузить изображение.\n\n';
+        errorMessage += 'Возможные причины:\n';
+        errorMessage += '- Сервер блокирует загрузку (CORS)\n';
+        errorMessage += '- Неверная ссылка или изображение недоступно\n';
+        errorMessage += '- Требуется авторизация\n\n';
+        errorMessage += 'Решение: Скачайте изображение и загрузите через [ LOAD_BANNER ]';
+        
+        alert(errorMessage);
+    }
+}
 
 function loadStaticImage(file) {
     isGif = false;
@@ -102,7 +183,6 @@ function loadStaticImage(file) {
             
             console.log(`Initial scale: ${scale.toFixed(3)}, offset: (${offsetX}, ${offsetY})`);
             
-            // Начинаем анимацию сразу
             startExpandAnimation();
             
             updateProgress(90);
@@ -110,7 +190,6 @@ function loadStaticImage(file) {
             updateEditor();
             updatePreview();
             
-            // Завершаем анимацию когда превью отрисовано
             requestAnimationFrame(() => {
                 requestAnimationFrame(() => {
                     updateProgress(100);
@@ -203,7 +282,6 @@ function loadGif(file) {
                             delay: 100
                         });
                         
-                        // Обновляем прогресс при извлечении кадров
                         const progress = 50 + Math.round((i / frameCount) * 25);
                         updateProgress(progress);
                         
@@ -232,7 +310,6 @@ function loadGif(file) {
                         console.log('GIF animation started');
                     }
                     
-                    // Начинаем анимацию сразу
                     startExpandAnimation();
                     
                     updateProgress(90);
@@ -240,7 +317,6 @@ function loadGif(file) {
                     updateEditor();
                     updatePreview();
                     
-                    // Завершаем анимацию когда превью отрисовано
                     requestAnimationFrame(() => {
                         requestAnimationFrame(() => {
                             updateProgress(100);
@@ -304,7 +380,6 @@ function loadGifFallback(file) {
             offsetX = 0;
             offsetY = 0;
             
-            // Начинаем анимацию сразу
             startExpandAnimation();
             
             updateProgress(90);
@@ -312,7 +387,6 @@ function loadGifFallback(file) {
             updateEditor();
             updatePreview();
             
-            // Завершаем анимацию когда превью отрисовано
             requestAnimationFrame(() => {
                 requestAnimationFrame(() => {
                     updateProgress(100);
@@ -671,7 +745,7 @@ async function saveGifBanner() {
             images: images,
             gifWidth: BANNER_WIDTH,
             gifHeight: BANNER_HEIGHT,
-            interval: 0.05, // 50ms между кадрами
+            interval: 0.05,
             numFrames: images.length,
             frameDuration: 1,
             sampleInterval: 10,
@@ -795,13 +869,11 @@ function startExpandAnimation() {
     container.classList.remove('compact');
     container.classList.add('expanded');
     
-    // Шаг 1: Скрываем subtitle (0ms)
     const subtitle = document.querySelector('.subtitle');
     if (subtitle) {
         subtitle.classList.add('hidden');
     }
     
-    // Шаг 2: Меняем ASCII графику с DISCORD на CUTTER (300ms)
     setTimeout(() => {
         if (asciiDiscord) {
             asciiDiscord.classList.add('hidden');
@@ -817,14 +889,12 @@ function startExpandAnimation() {
         }
     }, 600);
     
-    // Шаг 3: Перемещаем футер над контейнером (400ms)
     setTimeout(() => {
         if (footer) {
             footer.classList.add('move-up');
         }
     }, 400);
     
-    // Шаг 4: Показываем кнопки сохранения (700ms, с задержкой между кнопками)
     setTimeout(() => {
         const saveButtons = document.querySelectorAll('.btn-success');
         saveButtons.forEach((btn, index) => {
@@ -834,7 +904,6 @@ function startExpandAnimation() {
         });
     }, 700);
     
-    // Шаг 5: Скрываем информацию о размерах и показываем контролы (500ms)
     setTimeout(() => {
         const sizeInfoElements = document.querySelectorAll('.info p.size-info');
         sizeInfoElements.forEach(el => {

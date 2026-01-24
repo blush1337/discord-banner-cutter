@@ -28,10 +28,23 @@
             <p class="subtitle">[ BANNER CUTTER v1.2 ]</p>
             
             <div class="controls">
-                <button id="loadBanner" class="btn btn-primary">[ LOAD_BANNER ]</button>
+                <div class="load-banner-group">
+                    <button id="loadBanner" class="btn btn-primary">[ LOAD_BANNER ]</button>
+                    <button id="toggleUrlInput" class="btn btn-primary btn-arrow">▼</button>
+                </div>
                 <button id="saveBanner" class="btn btn-success" disabled>[ SAVE_BANNER ]</button>
                 <button id="saveAvatar" class="btn btn-success" disabled>[ SAVE_AVATAR ]</button>
                 <button id="saveAll" class="btn btn-success" disabled>[ SAVE_ALL ]</button>
+            </div>
+
+            <div class="url-input-section" id="urlSection" style="display: none;">
+                <p class="url-label">└─ load from URL (direct image link):</p>
+                <div class="url-input-container">
+                    <input type="text" id="urlInput" class="url-input" placeholder="https://i.pinimg.com/originals/..." />
+                    <button id="loadFromUrl" class="btn btn-primary">[ LOAD ]</button>
+                </div>
+                <p class="url-hint">├─ Works with direct links: i.pinimg.com, imgur.com, giphy.com, etc.</p>
+                <p class="url-hint">└─ For Pinterest: Download GIF → use [ LOAD_BANNER ] button</p>
             </div>
 
             <div class="info">

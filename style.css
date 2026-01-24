@@ -147,6 +147,24 @@ h2 {
     margin-bottom: 30px;
 }
 
+.load-banner-group {
+    display: flex;
+    gap: 0;
+}
+
+.load-banner-group .btn {
+    border-radius: 0;
+}
+
+.load-banner-group .btn:first-child {
+    border-right: none;
+}
+
+.btn-arrow {
+    padding: 12px 16px;
+    min-width: auto;
+}
+
 .btn {
     padding: 12px 24px;
     border: 2px solid #ffffff;
@@ -208,6 +226,67 @@ h2 {
 .btn-success:hover:not(:disabled) {
     background: #ffffff;
     color: #0a0a0a;
+}
+
+.url-input-section {
+    margin-bottom: 30px;
+    animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.url-label {
+    color: #ffffff;
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+.url-input-container {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.url-input {
+    flex: 1;
+    padding: 12px 16px;
+    background: #0f0f0f;
+    border: 2px solid #333;
+    border-radius: 0;
+    color: #ffffff;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 14px;
+    transition: border-color 0.3s;
+}
+
+.url-input:focus {
+    outline: none;
+    border-color: #5865F2;
+    box-shadow: 0 0 10px rgba(88, 101, 242, 0.3);
+}
+
+.url-input::placeholder {
+    color: #666;
+}
+
+.url-hint {
+    color: #666;
+    font-size: 12px;
+    margin: 5px 0 0 0;
+}
+
+.url-hint strong {
+    color: #43b581;
+    font-weight: bold;
 }
 
 .info {
