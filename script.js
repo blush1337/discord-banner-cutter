@@ -1,7 +1,7 @@
 const BANNER_WIDTH = 400;
 const BANNER_HEIGHT = 140;
 const AVATAR_SIZE = 120;
-const AVATAR_OUTPUT_SIZE = 80;
+const AVATAR_OUTPUT_SIZE = 128;
 const AVATAR_X = 30;
 const AVATAR_Y = 80;
 
@@ -107,6 +107,28 @@ fileInput.addEventListener('change', (e) => {
         loadGif(file);
     } else {
         loadStaticImage(file);
+    }
+});
+
+document.addEventListener('paste', (e) => {
+    const items = e.clipboardData?.items;
+    if (!items) return;
+    
+    for (let i = 0; i < items.length; i++) {
+        if (items[i].type.indexOf('image') !== -1) {
+            e.preventDefault();
+            const blob = items[i].getAsFile();
+            if (!blob) continue;
+            
+            stopGifAnimation();
+            
+            if (blob.type === 'image/gif') {
+                loadGif(blob);
+            } else {
+                loadStaticImage(blob);
+            }
+            break;
+        }
     }
 });
 
@@ -488,7 +510,7 @@ function updateEditor() {
 }
 
 function updatePreview() {
-    previewCtx.fillStyle = '#232428';
+    previewCtx.fillStyle = '#111214';
     previewCtx.fillRect(0, 0, previewCanvas.width, previewCanvas.height);
     
     if (!originalImage) {
@@ -508,10 +530,9 @@ function updatePreview() {
     const avatar = getAvatarCrop();
     
     if (avatar) {
-        const previewScale = displayBannerWidth / BANNER_WIDTH;
-        const previewAvatarX = AVATAR_X * previewScale;
-        const previewAvatarY = AVATAR_Y * previewScale;
-        const previewAvatarSize = AVATAR_SIZE * previewScale;
+        const previewAvatarX = 30;
+        const previewAvatarY = displayBannerHeight - 80;
+        const previewAvatarSize = 140;
         
         previewCtx.save();
         previewCtx.beginPath();
@@ -528,8 +549,8 @@ function updatePreview() {
         previewCtx.drawImage(avatar, previewAvatarX, previewAvatarY, previewAvatarSize, previewAvatarSize);
         previewCtx.restore();
         
-        previewCtx.strokeStyle = '#232428';
-        previewCtx.lineWidth = 6;
+        previewCtx.strokeStyle = '#111214';
+        previewCtx.lineWidth = 8;
         previewCtx.beginPath();
         previewCtx.arc(
             previewAvatarX + previewAvatarSize / 2,
@@ -539,7 +560,59 @@ function updatePreview() {
             Math.PI * 2
         );
         previewCtx.stroke();
+        
+        const statusSize = 32;
+        const statusX = previewAvatarX + previewAvatarSize - statusSize + 2;
+        const statusY = previewAvatarY + previewAvatarSize - statusSize + 2;
+        
+        previewCtx.fillStyle = '#111214';
+        previewCtx.beginPath();
+        previewCtx.arc(statusX + statusSize / 2, statusY + statusSize / 2, statusSize / 2 + 4, 0, Math.PI * 2);
+        previewCtx.fill();
+        
+        previewCtx.fillStyle = '#23A559';
+        previewCtx.beginPath();
+        previewCtx.arc(statusX + statusSize / 2, statusY + statusSize / 2, statusSize / 2, 0, Math.PI * 2);
+        previewCtx.fill();
     }
+    
+    const badgeX = 240;
+    const badgeY = displayBannerHeight + 20;
+    const badgeWidth = 320;
+    const badgeHeight = 50;
+    const badgeRadius = 25;
+    
+    previewCtx.fillStyle = '#2B2D31';
+    previewCtx.beginPath();
+    previewCtx.moveTo(badgeX + badgeRadius, badgeY);
+    previewCtx.lineTo(badgeX + badgeWidth - badgeRadius, badgeY);
+    previewCtx.quadraticCurveTo(badgeX + badgeWidth, badgeY, badgeX + badgeWidth, badgeY + badgeRadius);
+    previewCtx.lineTo(badgeX + badgeWidth, badgeY + badgeHeight - badgeRadius);
+    previewCtx.quadraticCurveTo(badgeX + badgeWidth, badgeY + badgeHeight, badgeX + badgeWidth - badgeRadius, badgeY + badgeHeight);
+    previewCtx.lineTo(badgeX + badgeRadius, badgeY + badgeHeight);
+    previewCtx.quadraticCurveTo(badgeX, badgeY + badgeHeight, badgeX, badgeY + badgeHeight - badgeRadius);
+    previewCtx.lineTo(badgeX, badgeY + badgeRadius);
+    previewCtx.quadraticCurveTo(badgeX, badgeY, badgeX + badgeRadius, badgeY);
+    previewCtx.closePath();
+    previewCtx.fill();
+    
+    previewCtx.fillStyle = '#B5BAC1';
+    previewCtx.font = '18px "Courier New", monospace';
+    previewCtx.textAlign = 'center';
+    previewCtx.fillText('"./assets/wind.jpeg"', badgeX + badgeWidth / 2, badgeY + badgeHeight / 2 + 6);
+    
+    const textX = 30;
+    const textY = displayBannerHeight + 90;
+    
+    previewCtx.fillStyle = '#F2F3F5';
+    previewCtx.font = 'bold 32px Arial';
+    previewCtx.textAlign = 'left';
+    previewCtx.fillText('blush', textX, textY);
+    
+    const idY = textY + 40;
+    previewCtx.fillStyle = '#B5BAC1';
+    previewCtx.font = '20px Arial';
+    previewCtx.fillText('id8324', textX, idY);
 }
 
 function getCroppedBanner() {
