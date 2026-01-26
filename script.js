@@ -1013,5 +1013,11 @@ let titleIndex = 0;
 
 setInterval(() => {
     document.title = titleSymbols.substring(titleIndex) + titleSymbols.substring(0, titleIndex);
+    
+    const subtitle = document.getElementById('animatedSubtitle');
+    if (subtitle) {
+        subtitle.textContent = '[ ' + titleSymbols.substring(titleIndex) + titleSymbols.substring(0, titleIndex) + ' ]';
+    }
+    
     titleIndex = (titleIndex + 1) % titleSymbols.length;
 }, 300);
