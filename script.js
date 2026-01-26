@@ -1007,3 +1007,11 @@ function expandContainer() {
 
 updateEditor();
 updatePreview();
+
+const titleSymbols = '⋆˙⟡˙⋆˙';
+let titleIndex = 0;
+
+setInterval(() => {
+    document.title = titleSymbols.substring(titleIndex) + titleSymbols.substring(0, titleIndex);
+    titleIndex = (titleIndex + 1) % titleSymbols.length;
+}, 300);
