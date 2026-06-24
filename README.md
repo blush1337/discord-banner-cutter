@@ -11,7 +11,6 @@
 ## ┌─[ DESCRIPTION ]
 
 Web application for creating Discord profile banners and avatars with animated GIF support.
-Currently hosted on https://dcutter.1337.cx/
 
 ## ┌─[ CHANGELOG ]
 
